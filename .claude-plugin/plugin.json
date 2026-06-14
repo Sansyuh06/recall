@@ -1,0 +1,31 @@
+{
+  "name": "recall",
+  "version": "0.1.0",
+  "description": "Memory the agent can call as a tool. Multi-grain, provenance-tracked, self-healing.",
+  "author": "recall-agent contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/fyeshi/recall",
+  "skills": [
+    {
+      "name": "recall",
+      "path": ".claude-plugin/skills/recall.md"
+    }
+  ],
+  "hooks": {
+    "Stop": "python -m recall.hooks.claude_code_stop"
+  },
+  "commands": [
+    {
+      "name": "recall-stats",
+      "command": "recall stats"
+    },
+    {
+      "name": "recall-heal",
+      "command": "recall heal"
+    },
+    {
+      "name": "recall-seed",
+      "command": "recall seed"
+    }
+  ]
+}
