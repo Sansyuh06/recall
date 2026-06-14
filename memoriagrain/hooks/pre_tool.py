@@ -38,7 +38,7 @@ def check_redundant_call(
     for mem in memories:
         # Compute actual cosine similarity between the query vector and
         # the stored atom's embedding, rather than using mem.confidence
-        # (which maxes at 0.5 for atoms due to grain_bonus × recency).
+        # (which maxes at 0.5 for atoms due to grain_bonus * recency).
         atom = store.get_atom(mem.id)
         if atom and atom.embedding:
             stored_vec = bytes_to_embedding(atom.embedding)
