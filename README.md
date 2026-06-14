@@ -1,26 +1,26 @@
-# 🧠 recall
+# 🧠 memoriagrain
 
 <p align="center">
-  <img src="docs/assets/recall_banner.jpg" alt="recall banner" width="100%" />
+  <img src="docs/assets/recall_banner.jpg" alt="memoriagrain banner" width="100%" />
 </p>
 
 <p align="center">
   <strong>A self-healing memory engine for AI agents, built on Microsoft Foundry IQ.</strong><br/>
-  Agents call <code>recall</code> as a tool — memory is explicit, provenance-tracked, and shared across agents via Foundry IQ knowledge bases.
+  Agents call <code>memoriagrain</code> as a tool — memory is explicit, provenance-tracked, and shared across agents via Foundry IQ knowledge bases.
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+" />
   <a href="https://github.com/Sansyuh06/recall"><img src="https://img.shields.io/badge/Claude_Code-Plugin-blue" alt="Claude Code Plugin" /></a>
-  <a href="https://github.com/Sansyuh06/memoriagrain/actions"><img src="https://img.shields.io/github/actions/workflow/status/Sansyuh06/memoriagrain/test.yml" alt="Tests" /></a>
-  <a href="https://github.com/Sansyuh06/memoriagrain/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Sansyuh06/recall" alt="License" /></a>
+  <a href="https://github.com/Sansyuh06/recall/actions"><img src="https://img.shields.io/github/actions/workflow/status/Sansyuh06/recall/test.yml" alt="Tests" /></a>
+  <a href="https://github.com/Sansyuh06/recall/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Sansyuh06/recall" alt="License" /></a>
 </p>
 
 ---
 
 ## ⚡ The Problem: Memory is Not Storage
 
-Most "agent memory" frameworks are just vector databases under a different name. They perform naive cosine similarity searches and inject random strings into the LLM context. 
+Most "agent memory" frameworks are just vector databases under a different name. They perform naive cosine similarity searches and inject random strings into the LLM context.
 
 This introduces three main issues:
 1. **Context Waste:** The agent pays token costs for memories it didn't request and doesn't need.
@@ -51,7 +51,7 @@ graph TD
 
 ## ✨ Key Features
 
-*   **🛠️ Memory as a Tool:** The model decides *when* to recall and *what* to query. Retrieval is fully visible, traceable, and auditable in agent logs.
+*   **🛠️ Memory as a Tool:** The model decides *when* to query and *what* to query for. Retrieval is fully visible, traceable, and auditable in agent logs.
 *   **📊 Three-Grain Hierarchy:** Memories mature from raw observations (**Atoms**) to consolidated trends (**Patterns**), up to permanent guidelines (**Principles**).
 *   **🛡️ Three-Gate Promotion:** Memories are only promoted if they satisfy strict density, consensus/agreement, and recency constraints.
 *   **🔄 Active Contradiction Resolution:** Detects conflicting memories (e.g., API config changes) and auto-resolves them via confidence/recency scores.
@@ -77,7 +77,7 @@ This is `memoriagrain`'s moat: agents that share a Foundry IQ knowledge base (or
 ```
 $ python agent_review.py
 
-Querying recall for "authentication"...
+Querying memoriagrain for "authentication"...
   ✅ RECALLED from atom, confidence=0.72, fresh
   🧠 3 atoms inherited from agent_search (written just now)
   
@@ -113,7 +113,7 @@ Wrap your agent loop with `@remember`. This automatically registers `memoriagrai
 ```python
 from memoriagrain import remember
 
-@remember(backend="sqlite:///.memoriagrain.db")
+@remember(backend="sqlite:///.memoriagrain/memoriagrain.db")
 def my_assistant(prompt: str) -> str:
     # Under the hood:
     # 1. The `memoriagrain` tool is automatically injected into your model's tool definitions.
@@ -148,14 +148,14 @@ Q3: How do I search a KB?             [RECALLED, confidence=0.50] (76 tokens fro
 Q4: How does authentication work?     [RECALLED, confidence=0.50] (95 tokens from memory, 0ms, $0)
 Q5: Best practices for agent memory?  [RECALLED, confidence=0.50] (109 tokens from memory, 0ms, $0)
 ------------------------------------------------------------------
-Total: 467 tokens (from memory), 0ms, $0.0000 — 5/5 recall hits
+Total: 467 tokens (from memory), 0ms, $0.0000 — 5/5 hits
 ```
 
 ---
 
 ## 💻 Command Line Interface
 
-`memoriagrain` comes with a powerful, developer-friendly CLI to inspect, seed, and manage memory:
+`memoriagrain` comes with a powerful, developer-friendly CLI:
 
 ```bash
 # Get stats on the current memory store
@@ -167,10 +167,10 @@ memoriagrain heal
 memoriagrain heal --dry-run         # preview what would change
 
 # Pre-seed memory from local docs, PDFs, or OpenAPI specs
-memoriagrain seed docs/
+memoriagrain seed --from docs/
 
 # Diff deployment snapshots to invalidate outdated memories
-memoriagrain diff v1.0.0 v1.1.0
+memoriagrain diff
 ```
 
 ---
