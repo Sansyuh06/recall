@@ -27,4 +27,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `MEMORY.md` conviction document
 - Real before/after examples with captured terminal output
 
-[0.1.0]: https://github.com/fyeshi/recall/releases/tag/v0.1.0
+[0.1.0]: https://github.com/Sansyuh06/recall/releases/tag/v0.1.0

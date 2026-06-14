@@ -1,19 +1,19 @@
 # 🧠 recall
 
 <p align="center">
-  <img src="docs/assets/recall_banner.png" alt="recall banner" width="100%" />
+  <img src="docs/assets/recall_banner.jpg" alt="recall banner" width="100%" />
 </p>
 
 <p align="center">
-  <strong>The multi-grain, self-healing memory engine that AI agents call as a tool.</strong>
+  <strong>A self-healing memory engine for AI agents, built on Microsoft Foundry IQ.</strong><br/>
+  Agents call <code>recall</code> as a tool — memory is explicit, provenance-tracked, and shared across agents via Foundry IQ knowledge bases.
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/recall-agent/"><img src="https://img.shields.io/pypi/v/recall-agent" alt="PyPI" /></a>
-  <a href="https://pypi.org/project/recall-agent/"><img src="https://img.shields.io/pypi/pyversions/recall-agent" alt="Python" /></a>
-  <a href="https://github.com/fyeshi/recall"><img src="https://img.shields.io/badge/Claude_Code-Plugin-blue" alt="Claude Code Plugin" /></a>
-  <a href="https://github.com/fyeshi/recall/actions"><img src="https://img.shields.io/github/actions/workflow/status/fyeshi/recall/test.yml" alt="Tests" /></a>
-  <a href="https://github.com/fyeshi/recall/blob/main/LICENSE"><img src="https://img.shields.io/github/license/fyeshi/recall" alt="License" /></a>
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+" />
+  <a href="https://github.com/Sansyuh06/recall"><img src="https://img.shields.io/badge/Claude_Code-Plugin-blue" alt="Claude Code Plugin" /></a>
+  <a href="https://github.com/Sansyuh06/recall/actions"><img src="https://img.shields.io/github/actions/workflow/status/Sansyuh06/recall/test.yml" alt="Tests" /></a>
+  <a href="https://github.com/Sansyuh06/recall/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Sansyuh06/recall" alt="License" /></a>
 </p>
 
 ---
@@ -29,7 +29,9 @@ This introduces three main issues:
 
 ## 🚀 The Solution: `recall`
 
-`recall` is a production-grade, self-healing memory substrate. Instead of stuffing context behind the scenes, **memory is exposed as a tool** that the agent actively chooses to invoke.
+`recall` is a production-grade, self-healing memory substrate built on **Microsoft Foundry IQ**. Instead of stuffing context behind the scenes, **memory is exposed as a tool** that the agent actively chooses to invoke. Foundry IQ provides the shared, governed knowledge layer — so memories are inherited across agents, respect project-level RBAC, and stay compliant at rest.
+
+Atoms are written from every interaction. Only those passing all three gates earn promotion to a Pattern. Only patterns passing the same three gates earn Principle status. Nothing skips a layer.
 
 ```mermaid
 graph TD
@@ -55,6 +57,38 @@ graph TD
 *   **🔄 Active Contradiction Resolution:** Detects conflicting memories (e.g., API config changes) and auto-resolves them via confidence/recency scores.
 *   **🍃 Source Freshness Tracking:** Ties memories to source files. If the file changes, the memory is flagged as stale.
 *   **🤝 Cross-Agent Inheritance:** Share memory stores across different agents with clear attribution and lineage.
+
+---
+
+## 🏗️ Why Foundry IQ as the Substrate
+
+`recall` ships with both a SQLite backend (offline, zero-config) and a **Microsoft Foundry IQ** backend for production. Why IQ?
+
+*   **Cross-agent inheritance.** When two agents share a Foundry IQ knowledge base, Agent B discovers Agent A's memories through normal `recall()` queries — with full attribution. No replication protocol, no merge strategy. Memory lives where work already lives.
+*   **Permission-aware retrieval.** Foundry IQ respects project-level RBAC. An agent scoped to `project-alpha` cannot read atoms written by `project-beta`. Access control is enforced at the substrate level, not in application code.
+*   **Governed at-rest storage.** Enterprise compliance requires that agent memory is not scattered across local SQLite files on developer laptops. Foundry IQ provides a managed, auditable store — no local PII sprawl.
+
+---
+
+## 🤝 Cross-Agent Inheritance in Action
+
+This is `recall`'s moat: agents that share a Foundry IQ knowledge base (or even a local SQLite file) automatically discover each other's memories — with visible attribution.
+
+```
+$ python agent_review.py
+
+Querying recall for "authentication"...
+  ✅ RECALLED from atom, confidence=0.72, fresh
+  🧠 3 atoms inherited from agent_search (written just now)
+  
+  Q: How does authentication work in Foundry IQ?
+  A: Authentication uses Azure Active Directory with the
+     DefaultAzureCredential chain...
+```
+
+Agent B never explicitly imported Agent A's knowledge. It simply queried the shared store, and `recall` surfaced the relevant atoms with a clear inheritance line. The developer reading the trace sees exactly where the knowledge came from.
+
+See [`examples/cross_agent_learning/`](./examples/cross_agent_learning/) for the full runnable demo.
 
 ---
 
@@ -91,26 +125,30 @@ def my_assistant(prompt: str) -> str:
 
 ## 📈 Before vs. After
 
-Here is a real comparison of an agent answering questions about Microsoft Foundry IQ:
+A comparison of an agent answering questions about Microsoft Foundry IQ — without and with `recall`.
+
+> **Note:** Captured from a deterministic stub LLM. See [`examples/foundry_before_after/`](./examples/foundry_before_after/) for the reproducible setup. Real LLM numbers will vary.
 
 ### ❌ Without `recall`
 ```
-Q1: How does authentication work?     [73 tokens, 800ms, $0.0007]
-Q2: What is a knowledge base?         [68 tokens, 1200ms, $0.0007]
-Q3: How do I search a KB?            [52 tokens, 900ms, $0.0005]
-Q4: How does authentication work?     [73 tokens, 1500ms, $0.0007] <-- Repeated cost!
+Q1: How does authentication work?     [66 tokens, 800ms, $0.0007]
+Q2: What is a knowledge base?         [76 tokens, 1200ms, $0.0008]
+Q3: How do I search a KB?             [51 tokens, 900ms, $0.0005]
+Q4: How does authentication work?     [66 tokens, 1500ms, $0.0007] <-- Repeated cost!
+Q5: Best practices for agent memory?  [76 tokens, 1100ms, $0.0008]
 ------------------------------------------------------------------
-Total: 347 tokens, 5.5s, $0.0035
+Total: 335 tokens, 5500ms, $0.0035
 ```
 
-###  With `recall`
+### ✅ With `recall`
 ```
-Q1: How does authentication work?     [RECALLED from Pattern, confidence=0.89] (24 tokens, 0ms, $0)
-Q2: What is a knowledge base?         [RECALLED from Pattern, confidence=0.87] (22 tokens, 0ms, $0)
-Q3: How do I search a KB?            [52 tokens, 900ms, $0.0005]
-Q4: How does authentication work?     [RECALLED from Pattern, confidence=0.89] (24 tokens, 0ms, $0)
+Q1: How does authentication work?     [RECALLED, confidence=0.50] (95 tokens from memory, 0ms, $0)
+Q2: What is a knowledge base?         [RECALLED, confidence=0.50] (92 tokens from memory, 0ms, $0)
+Q3: How do I search a KB?             [RECALLED, confidence=0.50] (76 tokens from memory, 0ms, $0)
+Q4: How does authentication work?     [RECALLED, confidence=0.50] (95 tokens from memory, 0ms, $0)
+Q5: Best practices for agent memory?  [RECALLED, confidence=0.50] (109 tokens from memory, 0ms, $0)
 ------------------------------------------------------------------
-Total: 148 tokens, 0.9s, $0.0005  (Saved 72% in tokens, 83% in latency!)
+Total: 467 tokens (from memory), 0ms, $0.0000 — 5/5 recall hits
 ```
 
 ---
@@ -121,17 +159,37 @@ Total: 148 tokens, 0.9s, $0.0005  (Saved 72% in tokens, 83% in latency!)
 
 ```bash
 # Get stats on the current memory store
-uv run recall stats
+recall stats                  # after pip install
+uv run recall stats           # for development
 
 # Resolve conflicts & promote qualified atoms
-uv run recall heal
+recall heal
+recall heal --dry-run         # preview what would change
 
 # Pre-seed memory from local docs, PDFs, or OpenAPI specs
-uv run recall seed docs/
+recall seed docs/
 
 # Diff deployment snapshots to invalidate outdated memories
-uv run recall diff v1.0.0 v1.1.0
+recall diff v1.0.0 v1.1.0
 ```
+
+---
+
+## 📊 Status
+
+| | Area | Details |
+|---|---|---|
+| ✅ | **SQLite backend** | Full CRUD, vector search, embedding cache |
+| ✅ | **Three-gate promotion** | Density, agreement, recency gates |
+| ✅ | **Heal command** | Contradiction detection + resolution with `--dry-run` |
+| ✅ | **Seed command** | Markdown, PDF, OpenAPI spec ingestion |
+| ✅ | **CLI** | 6 verbs: `seed`, `stats`, `heal`, `replay`, `diff`, `forget` |
+| ✅ | **Claude Code plugin** | Manifest + Stop hook for continuous learning |
+| ✅ | **Test suite** | 10 test modules, hermetic (no API keys needed) |
+| ⚠️ | **Foundry IQ backend** | Implemented; requires `FOUNDRY_IQ_PROJECT` env var |
+| 📋 | **FAISS index** | For stores >100K atoms (currently numpy dot-product) |
+| 📋 | **MCP server mode** | Expose `recall` as an MCP tool server |
+| 📋 | **PyPI publish** | Package is `recall-agent`, not yet published |
 
 ---
 
@@ -143,4 +201,3 @@ uv run recall diff v1.0.0 v1.1.0
 *   [docs/claude-code-plugin.md](./docs/claude-code-plugin.md) — Deep integration with Claude Code and continuous learning loops.
 
 ---
-

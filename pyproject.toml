@@ -61,10 +61,10 @@ all = [
 recall = "recall.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/fyeshi/recall"
-Documentation = "https://github.com/fyeshi/recall/tree/main/docs"
-Repository = "https://github.com/fyeshi/recall"
-Issues = "https://github.com/fyeshi/recall/issues"
+Homepage = "https://github.com/Sansyuh06/recall"
+Documentation = "https://github.com/Sansyuh06/recall/tree/master/docs"
+Repository = "https://github.com/Sansyuh06/recall"
+Issues = "https://github.com/Sansyuh06/recall/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["recall"]
