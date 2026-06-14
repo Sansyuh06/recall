@@ -13,7 +13,6 @@
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+" />
   <a href="https://github.com/Sansyuh06/recall"><img src="https://img.shields.io/badge/Claude_Code-Plugin-blue" alt="Claude Code Plugin" /></a>
   <a href="https://github.com/Sansyuh06/recall/actions"><img src="https://img.shields.io/github/actions/workflow/status/Sansyuh06/recall/test.yml" alt="Tests" /></a>
-  <a href="https://github.com/Sansyuh06/recall/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Sansyuh06/recall" alt="License" /></a>
 </p>
 
 ---
