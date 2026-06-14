@@ -1,31 +1,31 @@
 {
-  "name": "recall",
+  "name": "memoriagrain",
   "version": "0.1.0",
   "description": "Memory the agent can call as a tool. Multi-grain, provenance-tracked, self-healing.",
-  "author": "recall-agent contributors",
+  "author": "memoriagrain contributors",
   "license": "MIT",
   "homepage": "https://github.com/fyeshi/recall",
   "skills": [
     {
-      "name": "recall",
-      "path": ".claude-plugin/skills/recall.md"
+      "name": "memoriagrain",
+      "path": ".claude-plugin/skills/memoriagrain.md"
     }
   ],
   "hooks": {
-    "Stop": "python -m recall.hooks.claude_code_stop"
+    "Stop": "python -m memoriagrain.hooks.claude_code_stop"
   },
   "commands": [
     {
-      "name": "recall-stats",
-      "command": "recall stats"
+      "name": "memoriagrain-stats",
+      "command": "memoriagrain stats"
     },
     {
-      "name": "recall-heal",
-      "command": "recall heal"
+      "name": "memoriagrain-heal",
+      "command": "memoriagrain heal"
     },
     {
-      "name": "recall-seed",
-      "command": "recall seed"
+      "name": "memoriagrain-seed",
+      "command": "memoriagrain seed"
     }
   ]
 }

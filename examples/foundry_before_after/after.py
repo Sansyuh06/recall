@@ -1,6 +1,6 @@
 """After: Agent with @remember decorator.
 
-Same 5 questions, but now the agent has recall memory. The second time
+Same 5 questions, but now the agent has memoriagrain memory. The second time
 a question is asked (Q4 repeats Q1), the agent retrieves the answer
 from memory instead of re-computing it.
 
@@ -20,11 +20,11 @@ from pathlib import Path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from examples.foundry_before_after.stub_llm import stub_complete
-from recall.decorator import remember
-from recall.embeddings import embed, embedding_to_bytes
-from recall.seed import from_path
-from recall.store.sqlite import SQLiteStore
-from recall.tool import handle_recall_call
+from memoriagrain.decorator import remember
+from memoriagrain.embeddings import embed, embedding_to_bytes
+from memoriagrain.seed import from_path
+from memoriagrain.store.sqlite import SQLiteStore
+from memoriagrain.tool import handle_recall_call
 
 QUESTIONS = [
     "How does authentication work in Foundry IQ?",
@@ -36,9 +36,9 @@ QUESTIONS = [
 
 
 def main() -> None:
-    """Run the recall-enhanced agent."""
+    """Run the memoriagrain-enhanced agent."""
     # Use a temp DB for this demo
-    db_path = os.path.join(tempfile.mkdtemp(), "demo_recall.db")
+    db_path = os.path.join(tempfile.mkdtemp(), "demo_memoriagrain.db")
     store = SQLiteStore(db_path)
 
     # Seed from local docs
@@ -50,7 +50,7 @@ def main() -> None:
     print()
 
     print("=" * 60)
-    print("AFTER: Agent with recall")
+    print("AFTER: Agent with memoriagrain")
     print("=" * 60)
     print()
 
@@ -62,7 +62,7 @@ def main() -> None:
     for i, question in enumerate(QUESTIONS):
         print(f"Q{i + 1}: {question}")
 
-        # Check recall first
+        # Check memoriagrain first
         recall_result = handle_recall_call(store, {"query": question})
         recalled_memory = str(recall_result.get("memory", ""))
         recall_confidence = float(recall_result.get("confidence", 0))
@@ -75,7 +75,7 @@ def main() -> None:
 
             # Estimate saved tokens
             saved_tokens = len(recalled_memory.split())
-            total_tokens += saved_tokens // 3  # recall is cheaper
+            total_tokens += saved_tokens // 3  # memoriagrain is cheaper
 
             print(f"A{i + 1}: [RECALLED from {grain}, confidence={recall_confidence:.2f}, {freshness}]")
             print(f"    {recalled_memory[:120]}...")
@@ -94,7 +94,7 @@ def main() -> None:
 
             # Write to memory for next time
             vec = embed(f"{question} {answer}")
-            from recall.store.base import Atom
+            from memoriagrain.store.base import Atom
 
             atom = Atom(
                 prompt=question,

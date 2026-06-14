@@ -1,4 +1,4 @@
-"""Shared test fixtures and configuration for recall tests.
+"""Shared test fixtures and configuration for memoriagrain tests.
 
 All tests use a temporary SQLite database that is cleaned up after
 each test. Network-dependent tests are marked with @pytest.mark.network
@@ -13,9 +13,9 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from recall.embeddings import embedding_to_bytes, reset_cache
-from recall.store.base import Atom
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.embeddings import embedding_to_bytes, reset_cache
+from memoriagrain.store.base import Atom
+from memoriagrain.store.sqlite import SQLiteStore
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
@@ -45,7 +45,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 @pytest.fixture
 def tmp_db(tmp_path: Path) -> str:
     """Create a temporary database path."""
-    return str(tmp_path / "test_recall.db")
+    return str(tmp_path / "test_memoriagrain.db")
 
 
 @pytest.fixture

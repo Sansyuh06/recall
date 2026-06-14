@@ -33,7 +33,8 @@ htmlcov/
 # ruff
 .ruff_cache/
 
-# recall runtime
+# memoriagrain runtime
+.memoriagrain/
 .recall/
 *.db
 

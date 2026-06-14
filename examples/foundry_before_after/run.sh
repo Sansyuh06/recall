@@ -6,11 +6,11 @@ set -e
 cd "$(dirname "$0")"
 mkdir -p captured
 
-echo "Running before.py (no recall)..."
+echo "Running before.py (no memoriagrain)..."
 uv run python before.py 2>&1 | tee captured/before.txt
 
 echo ""
-echo "Running after.py (with recall)..."
+echo "Running after.py (with memoriagrain)..."
 uv run python after.py 2>&1 | tee captured/after.txt
 
 echo ""

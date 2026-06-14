@@ -1,4 +1,4 @@
-"""Before: Naive agent without recall.
+"""Before: Naive agent without memoriagrain.
 
 Answers 5 questions about Foundry IQ without any memory. Each question
 is answered independently, with no knowledge carried between calls.
@@ -27,9 +27,9 @@ QUESTIONS = [
 
 
 def main() -> None:
-    """Run the naive agent without recall."""
+    """Run the naive agent without memoriagrain."""
     print("=" * 60)
-    print("BEFORE: Agent without recall")
+    print("BEFORE: Agent without memoriagrain")
     print("=" * 60)
     print()
 

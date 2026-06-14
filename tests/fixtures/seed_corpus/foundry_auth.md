@@ -39,6 +39,6 @@ managed identities in production. For local development, use
 `az login` or set environment variables in a `.env` file (excluded
 from git via .gitignore).
 
-The recall library respects the principle of least privilege: read-only
+The memoriagrain library respects the principle of least privilege: read-only
 operations use only the Reader role, and write operations are explicitly
 gated behind the Contributor role check.

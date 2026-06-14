@@ -66,6 +66,6 @@ project and KB name. Each agent writes documents with its own
 agent_id in the metadata, allowing other agents to discover and
 attribute inherited knowledge.
 
-This is the foundation of recall's cross-agent learning: when
+This is the foundation of memoriagrain's cross-agent learning: when
 agent B searches the shared KB and finds documents written by
 agent A, the inheritance line becomes visible in the response.

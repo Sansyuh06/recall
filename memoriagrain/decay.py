@@ -1,4 +1,4 @@
-"""Exponential decay worker for recall memory management.
+"""Exponential decay worker for memoriagrain memory management.
 
 Atoms whose effective weight falls below a threshold are marked as
 decayed. Decayed atoms are excluded from search results but kept in
@@ -17,7 +17,7 @@ from __future__ import annotations
 import math
 from datetime import UTC, datetime
 
-from recall.store.base import Atom, Store
+from memoriagrain.store.base import Atom, Store
 
 
 def effective_weight(atom: Atom, half_life_days: float = 30.0) -> float:

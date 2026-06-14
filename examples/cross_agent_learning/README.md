@@ -13,7 +13,7 @@ Agent B (review) inherits that knowledge visibly.
    ```
 
 This is the cross-agent learning feature: memory is shared, not
-synchronized. Agent B discovers Agent A's work through normal recall,
+synchronized. Agent B discovers Agent A's work through normal memoriagrain,
 with visible attribution.
 
 ## Running

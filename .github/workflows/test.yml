@@ -26,13 +26,13 @@ jobs:
         run: uv sync --extra dev
 
       - name: Lint with ruff
-        run: uv run ruff check recall tests
+        run: uv run ruff check memoriagrain tests
 
       - name: Format check with ruff
-        run: uv run ruff format --check recall tests
+        run: uv run ruff format --check memoriagrain tests
 
       - name: Type check with mypy
-        run: uv run mypy recall
+        run: uv run mypy memoriagrain
 
       - name: Run tests
         run: uv run pytest -v --no-network

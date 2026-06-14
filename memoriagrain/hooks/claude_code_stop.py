@@ -5,7 +5,7 @@ Stop. Reads the session transcript from stdin, extracts Q->A turns,
 and writes them as atoms with full session attribution.
 
 Invoked by Claude Code as:
-    python -m recall.hooks.claude_code_stop
+    python -m memoriagrain.hooks.claude_code_stop
 
 Reads JSON transcript from stdin. Writes atoms to the configured store.
 Prints a summary to stderr so it appears in the agent trace.
@@ -17,9 +17,9 @@ import json
 import sys
 from datetime import UTC, datetime
 
-from recall.embeddings import embed, embedding_to_bytes
-from recall.store.base import Atom
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.embeddings import embed, embedding_to_bytes
+from memoriagrain.store.base import Atom, Store
+from memoriagrain.store.sqlite import SQLiteStore
 
 
 def extract_qa_pairs(transcript: list[dict[str, object]]) -> list[tuple[str, str]]:
@@ -61,9 +61,15 @@ def extract_qa_pairs(transcript: list[dict[str, object]]) -> list[tuple[str, str
                 i += 2
                 continue
 
-            # Filter: skip error responses
-            error_markers = ["error", "failed", "traceback", "exception"]
-            if any(marker in next_content.lower()[:100] for marker in error_markers):
+            # Filter: skip error responses — only when the first line
+            # starts with an actual error marker, not just any mention
+            # of the word "error" in legitimate content.
+            first_line = next_content.strip().split("\n")[0].lower()
+            if (
+                first_line.startswith("error:")
+                or first_line.startswith("traceback (most recent call last):")
+                or first_line.startswith("exception:")
+            ):
                 i += 2
                 continue
 
@@ -77,7 +83,7 @@ def extract_qa_pairs(transcript: list[dict[str, object]]) -> list[tuple[str, str
 
 def process_transcript(
     transcript_data: dict[str, object],
-    store: SQLiteStore | None = None,
+    store: Store | None = None,
 ) -> int:
     """Process a Claude Code session transcript and write atoms.
 
@@ -135,14 +141,14 @@ def main() -> None:
         if count > 0:
             session_id = data.get("session_id", "unknown")
             print(
-                f"[recall] wrote {count} atoms from session {session_id}",
+                f"[memoriagrain] wrote {count} atoms from session {session_id}",
                 file=sys.stderr,
             )
 
     except json.JSONDecodeError as e:
-        print(f"[recall] failed to parse transcript: {e}", file=sys.stderr)
+        print(f"[memoriagrain] failed to parse transcript: {e}", file=sys.stderr)
     except Exception as e:
-        print(f"[recall] hook error: {e}", file=sys.stderr)
+        print(f"[memoriagrain] hook error: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

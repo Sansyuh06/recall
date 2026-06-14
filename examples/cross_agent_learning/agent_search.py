@@ -12,9 +12,9 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from recall.embeddings import embed, embedding_to_bytes
-from recall.store.base import Atom
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.embeddings import embed, embedding_to_bytes
+from memoriagrain.store.base import Atom
+from memoriagrain.store.sqlite import SQLiteStore
 
 QUESTIONS = [
     "What authentication methods does Foundry IQ support?",

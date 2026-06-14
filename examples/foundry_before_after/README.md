@@ -1,7 +1,7 @@
-# Before / After: Foundry Agent with recall
+# Before / After: Foundry Agent with memoriagrain
 
 This example demonstrates the difference between a naive agent and one
-using `@remember` with recall memory.
+using `@remember` with memoriagrain memory.
 
 ## What it does
 
@@ -9,9 +9,9 @@ using `@remember` with recall memory.
    Each question is answered independently, including a repeated question
    that gets re-computed from scratch.
 
-2. **after.py** answers the same 5 questions with recall:
+2. **after.py** answers the same 5 questions with memoriagrain:
    - Seeds memory from `seed/` documentation first
-   - Checks recall before calling the LLM
+   - Checks memoriagrain before calling the LLM
    - Writes new Q&A atoms after each LLM call
    - The repeated question (Q4) hits memory instead of re-computing
 

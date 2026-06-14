@@ -113,18 +113,18 @@ times is safe and produces no duplicate patterns or principles.
 
 Set strictness via the CLI:
 ```bash
-recall config set promotion.strictness strict
+memoriagrain config set promotion.strictness strict
 ```
 
 Or programmatically:
 ```python
-from recall.promote import PromoteWorker
+from memoriagrain.promote import PromoteWorker
 worker = PromoteWorker(store, strictness="strict")
 worker.run_once()
 ```
 
 ## Integration with heal
 
-The `recall heal` command runs a promotion pass before contradiction
+The `memoriagrain heal` command runs a promotion pass before contradiction
 resolution. This ensures that any promotable clusters are consolidated
 before the heal worker looks for disagreements.

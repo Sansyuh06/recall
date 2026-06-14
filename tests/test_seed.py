@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from recall.seed import from_path
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.seed import from_path
+from memoriagrain.store.sqlite import SQLiteStore
 
 
 class TestSeed:

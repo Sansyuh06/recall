@@ -1,4 +1,4 @@
-"""Three-gate promotion algorithm for recall.
+"""Three-gate promotion algorithm for memoriagrain.
 
 Atoms become patterns (and patterns become principles) when all three
 gates pass:
@@ -16,7 +16,7 @@ gates pass:
     At least min_recent (default 2) of the cluster atoms must have
     last_recalled_at within the recency_window (default 30 days).
 
-Config knob: recall config set promotion.strictness {loose|default|strict}
+Config knob: memoriagrain config set promotion.strictness {loose|default|strict}
 adjusts the thresholds for all three gates simultaneously.
 """
 
@@ -27,9 +27,9 @@ from datetime import UTC, datetime, timedelta
 
 import numpy as np
 
-from recall.embeddings import bytes_to_embedding, cosine_similarity, embed, embedding_to_bytes
-from recall.judge import judge_cluster
-from recall.store.base import Atom, Pattern, Principle, Store, _new_id
+from memoriagrain.embeddings import bytes_to_embedding, cosine_similarity, embed, embedding_to_bytes
+from memoriagrain.judge import judge_cluster
+from memoriagrain.store.base import Atom, Pattern, Principle, Store, _new_id
 
 
 @dataclass

@@ -1,6 +1,6 @@
 # Architecture
 
-This document describes the architecture of `recall` for contributors
+This document describes the architecture of `memoriagrain` for contributors
 and advanced users.
 
 ## Design principles
@@ -56,7 +56,7 @@ is used. This is adequate for testing but not for production.
 For production quality, set `OPENAI_API_KEY` and `RECALL_EMBEDDINGS=openai`
 to use `text-embedding-3-small` (1536 dimensions).
 
-Embeddings are cached on disk in `.recall/embed_cache/` keyed by SHA-256
+Embeddings are cached on disk in `.memoriagrain/embed_cache/` keyed by SHA-256
 of the input text.
 
 ## Agreement judge
@@ -82,4 +82,4 @@ Runtime configuration is stored in the SQLite meta table:
 - `promotion.strictness`: "loose", "default", or "strict"
 - `hooks.pre_tool`: "true" or "false"
 
-Access via `recall config get/set KEY VALUE`.
+Access via `memoriagrain config get/set KEY VALUE`.

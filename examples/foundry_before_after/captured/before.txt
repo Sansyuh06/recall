@@ -1,5 +1,5 @@
 ============================================================
-BEFORE: Agent without recall
+BEFORE: Agent without memoriagrain
 ============================================================
 
 Q1: How does authentication work in Foundry IQ?

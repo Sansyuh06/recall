@@ -13,7 +13,7 @@ A clear and concise description of what the bug is.
 ## To reproduce
 
 Steps to reproduce the behavior:
-1. Install with `pip install recall-agent`
+1. Install with `pip install memoriagrain`
 2. Run `...`
 3. See error
 
@@ -25,7 +25,7 @@ What you expected to happen.
 
 - OS: [e.g., Ubuntu 22.04, macOS 14, Windows 11]
 - Python version: [e.g., 3.11.9]
-- recall version: [e.g., 0.1.0]
+- memoriagrain version: [e.g., 0.1.0]
 - Backend: [SQLite / Foundry IQ]
 
 ## Additional context

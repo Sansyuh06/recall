@@ -1,16 +1,16 @@
-"""Pre-tool hook for recall -- redundant call detection.
+"""Pre-tool hook for memoriagrain -- redundant call detection.
 
 Optional hook that checks if a tool call is about to happen for a
 question very similar to a past one. If yes, injects a hint message
 before the tool fires.
 
-Off by default; enabled via: recall config set hooks.pre_tool true
+Off by default; enabled via: memoriagrain config set hooks.pre_tool true
 """
 
 from __future__ import annotations
 
-from recall.embeddings import embed, embedding_to_bytes
-from recall.store.base import Store
+from memoriagrain.embeddings import bytes_to_embedding, cosine_similarity, embed, embedding_to_bytes
+from memoriagrain.store.base import Store
 
 
 def check_redundant_call(
@@ -19,7 +19,7 @@ def check_redundant_call(
     similarity_threshold: float = 0.85,
     min_recall_count: int = 3,
 ) -> str | None:
-    """Check if a query is redundant based on past recall history.
+    """Check if a query is redundant based on past memoriagrain history.
 
     Args:
         store: The storage backend.
@@ -36,11 +36,16 @@ def check_redundant_call(
     memories = store.search(query_bytes, grain="atom", k=3)
 
     for mem in memories:
-        if mem.confidence > similarity_threshold:
-            atom = store.get_atom(mem.id)
-            if atom and atom.recall_count >= min_recall_count:
+        # Compute actual cosine similarity between the query vector and
+        # the stored atom's embedding, rather than using mem.confidence
+        # (which maxes at 0.5 for atoms due to grain_bonus × recency).
+        atom = store.get_atom(mem.id)
+        if atom and atom.embedding:
+            stored_vec = bytes_to_embedding(atom.embedding)
+            similarity = cosine_similarity(vec, stored_vec)
+            if similarity > similarity_threshold and atom.recall_count >= min_recall_count:
                 return (
-                    f"[recall hint] You've answered a similar question "
+                    f"[memoriagrain hint] You've answered a similar question "
                     f"{atom.recall_count} times recently. "
                     f"Last answer: {atom.answer[:200]}"
                 )

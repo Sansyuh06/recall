@@ -1,25 +1,25 @@
-"""recall() tool injection logic.
+"""memoriagrain() tool injection logic.
 
 Provides the tool definition (OpenAI function-calling format) and the
 handler that performs the actual retrieval. This is the core of what
 makes recall a tool the model calls, rather than a prefix injection.
 
-The model sees `recall` in its tool list, decides when to call it,
-and gets back a provenance-rich response. The recall step appears
+The model sees `memoriagrain` in its tool list, decides when to call it,
+and gets back a provenance-rich response. The memoriagrain step appears
 in the trace. Memory becomes auditable.
 """
 
 from __future__ import annotations
 
-from recall.confidence import confidence as compute_confidence
-from recall.embeddings import embed, embedding_to_bytes
-from recall.freshness import check_freshness
-from recall.inheritance import emit_inheritance_line, format_inheritance_line
-from recall.store.base import Memory, Store
+from memoriagrain.confidence import confidence as compute_confidence
+from memoriagrain.embeddings import embed, embedding_to_bytes
+from memoriagrain.freshness import check_freshness
+from memoriagrain.inheritance import emit_inheritance_line, format_inheritance_line
+from memoriagrain.store.base import Memory, Store
 
 
 def recall_tool_definition() -> dict[str, object]:
-    """Return the OpenAI-style function spec for the recall tool.
+    """Return the OpenAI-style function spec for the memoriagrain tool.
 
     This is the tool definition injected into the agent's tool list.
     The model calls it when it wants to remember something.
@@ -27,7 +27,7 @@ def recall_tool_definition() -> dict[str, object]:
     return {
         "type": "function",
         "function": {
-            "name": "recall",
+            "name": "memoriagrain",
             "description": (
                 "Recall what this agent (or related agents) has learned "
                 "about similar questions. Returns memories with provenance, "
@@ -67,7 +67,7 @@ def handle_recall_call(
     agent_id: str = "default",
     k: int = 5,
 ) -> dict[str, object]:
-    """Handle a recall tool call from the model.
+    """Handle a memoriagrain tool call from the model.
 
     Performs embedding-based search, applies freshness checking and
     confidence scoring, truncates to max_tokens, and formats the
@@ -80,7 +80,7 @@ def handle_recall_call(
         k: Maximum number of raw results to retrieve.
 
     Returns:
-        A dict matching the recall response schema.
+        A dict matching the memoriagrain response schema.
     """
     query = str(args.get("query", ""))
     grain = str(args.get("grain", "auto"))
@@ -170,7 +170,7 @@ def handle_recall_call(
 
 
 def _empty_response() -> dict[str, object]:
-    """Return an empty recall response."""
+    """Return an empty memoriagrain response."""
     return {
         "memory": "",
         "grain": "atom",

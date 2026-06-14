@@ -1,16 +1,16 @@
-"""recall CLI -- six active verbs, all backed by rich terminal output.
+"""memoriagrain CLI -- six active verbs, all backed by rich terminal output.
 
 Commands:
-    recall seed --from PATH      Populate memory from existing content
-    recall stats [--json]        Heatmap of what's actually used
-    recall heal [--dry-run]      Actively resolve contradictions
-    recall replay [--since 30d]  Git-log-style timeline of memory growth
-    recall diff [--against ...]  Flag memories invalidated by changes
-    recall forget --pattern STR  Manual eviction
+    memoriagrain seed --from PATH      Populate memory from existing content
+    memoriagrain stats [--json]        Heatmap of what's actually used
+    memoriagrain heal [--dry-run]      Actively resolve contradictions
+    memoriagrain replay [--since 30d]  Git-log-style timeline of memory growth
+    memoriagrain diff [--against ...]  Flag memories invalidated by changes
+    memoriagrain forget --pattern STR  Manual eviction
 
 Admin:
-    recall config get/set KEY VALUE
-    recall version
+    memoriagrain config get/set KEY VALUE
+    memoriagrain version
 """
 
 from __future__ import annotations
@@ -25,10 +25,10 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.tree import Tree
 
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.store.sqlite import SQLiteStore
 
 app = typer.Typer(
-    name="recall",
+    name="memoriagrain",
     help="Memory the AI agent can call as a tool.",
     no_args_is_help=True,
     rich_markup_mode="markdown",
@@ -36,7 +36,7 @@ app = typer.Typer(
 console = Console()
 
 
-def _get_store(backend: str = ".recall/recall.db") -> SQLiteStore:
+def _get_store(backend: str = ".memoriagrain/memoriagrain.db") -> SQLiteStore:
     """Get the default SQLite store."""
     return SQLiteStore(backend)
 
@@ -44,7 +44,7 @@ def _get_store(backend: str = ".recall/recall.db") -> SQLiteStore:
 @app.command()
 def seed(
     from_path: str = typer.Option(..., "--from", help="Path to seed from (file or directory)"),
-    backend: str = typer.Option(".recall/recall.db", "--backend", help="Storage backend path"),
+    backend: str = typer.Option(".memoriagrain/memoriagrain.db", "--backend", help="Storage backend path"),
     agent_id: str = typer.Option("seed", "--agent-id", help="Agent ID for attribution"),
 ) -> None:
     """Populate memory from existing content.
@@ -52,7 +52,7 @@ def seed(
     Walks markdown, text, PDF, and OpenAPI files to extract Q->A pairs
     and writes them as atoms. Runs one promotion pass afterward.
     """
-    from recall.seed import from_path as seed_from_path
+    from memoriagrain.seed import from_path as seed_from_path
 
     store = _get_store(backend)
     path = Path(from_path)
@@ -70,7 +70,7 @@ def seed(
             f"[green]Seeded {count} atoms[/green]\n"
             f"Patterns: {stats.total_patterns}\n"
             f"Principles: {stats.total_principles}",
-            title="recall seed",
+            title="memoriagrain seed",
             border_style="green",
         )
     )
@@ -79,7 +79,7 @@ def seed(
 
 @app.command()
 def stats(
-    backend: str = typer.Option(".recall/recall.db", "--backend", help="Storage backend path"),
+    backend: str = typer.Option(".memoriagrain/memoriagrain.db", "--backend", help="Storage backend path"),
     as_json: bool = typer.Option(False, "--json", help="Output as JSON"),
 ) -> None:
     """Show memory statistics -- what's stored, what's used, what's decayed."""
@@ -101,7 +101,7 @@ def stats(
         store.close()
         return
 
-    table = Table(title="recall stats", show_header=True, header_style="bold cyan")
+    table = Table(title="memoriagrain stats", show_header=True, header_style="bold cyan")
     table.add_column("Metric", style="bold")
     table.add_column("Value", justify="right")
 
@@ -143,7 +143,7 @@ def stats(
 
 @app.command()
 def heal(
-    backend: str = typer.Option(".recall/recall.db", "--backend", help="Storage backend path"),
+    backend: str = typer.Option(".memoriagrain/memoriagrain.db", "--backend", help="Storage backend path"),
     dry_run: bool = typer.Option(False, "--dry-run", help="Detect but don't apply resolutions"),
 ) -> None:
     """Actively resolve contradictions in memory.
@@ -151,7 +151,7 @@ def heal(
     Runs a promotion pass, then scans for contradicting atom clusters
     and resolves them by picking winners based on confidence and recency.
     """
-    from recall.heal import HealWorker
+    from memoriagrain.heal import HealWorker
 
     store = _get_store(backend)
     worker = HealWorker(store)
@@ -182,14 +182,14 @@ def heal(
             )
 
         console.print(table)
-        console.print("\n[dim]Full log: .recall/heal.log[/dim]")
+        console.print("\n[dim]Full log: .memoriagrain/heal.log[/dim]")
 
     store.close()
 
 
 @app.command()
 def replay(
-    backend: str = typer.Option(".recall/recall.db", "--backend", help="Storage backend path"),
+    backend: str = typer.Option(".memoriagrain/memoriagrain.db", "--backend", help="Storage backend path"),
     since: str = typer.Option("30d", "--since", help="Time window (e.g., 7d, 30d, 90d)"),
 ) -> None:
     """Git-log-style timeline of memory growth.
@@ -199,8 +199,13 @@ def replay(
     """
     store = _get_store(backend)
 
-    # Parse the since value
-    days = int(since.replace("d", ""))
+    # Parse the since value — supports '7d', '30d', etc.
+    # Falls back to 30 days on unrecognized formats like '1h', '1w'.
+    try:
+        days = int(since.replace("d", ""))
+    except ValueError:
+        console.print(f"[yellow]Warning: could not parse --since '{since}', defaulting to 30 days.[/yellow]")
+        days = 30
     cutoff = datetime.now(UTC) - timedelta(days=days)
 
     atoms = list(store.all_atoms(since=cutoff))
@@ -238,7 +243,7 @@ def replay(
 
 @app.command(name="diff")
 def diff_cmd(
-    backend: str = typer.Option(".recall/recall.db", "--backend", help="Storage backend path"),
+    backend: str = typer.Option(".memoriagrain/memoriagrain.db", "--backend", help="Storage backend path"),
     against: str = typer.Option("last-deploy", "--against", help="What to diff against"),
     save: bool = typer.Option(False, "--save", help="Save current config as deploy snapshot"),
 ) -> None:
@@ -247,7 +252,7 @@ def diff_cmd(
     Compares stored memories against the last deploy snapshot and
     reports which ones may need review.
     """
-    from recall.diff import diff_against_last_deploy, save_deploy_snapshot
+    from memoriagrain.diff import diff_against_last_deploy, save_deploy_snapshot
 
     store = _get_store(backend)
 
@@ -289,7 +294,7 @@ def diff_cmd(
 def forget(
     pattern: str | None = typer.Option(None, "--pattern", help="Pattern to match and forget"),
     memory_id: str | None = typer.Option(None, "--id", help="Specific memory ID to forget"),
-    backend: str = typer.Option(".recall/recall.db", "--backend", help="Storage backend path"),
+    backend: str = typer.Option(".memoriagrain/memoriagrain.db", "--backend", help="Storage backend path"),
 ) -> None:
     """Manually evict memories from the store.
 
@@ -321,9 +326,9 @@ def config(
     action: str = typer.Argument(..., help="'get' or 'set'"),
     key: str = typer.Argument(..., help="Config key (e.g., promotion.strictness)"),
     value: str | None = typer.Argument(None, help="Value to set"),
-    backend: str = typer.Option(".recall/recall.db", "--backend", help="Storage backend path"),
+    backend: str = typer.Option(".memoriagrain/memoriagrain.db", "--backend", help="Storage backend path"),
 ) -> None:
-    """Get or set recall configuration values."""
+    """Get or set memoriagrain configuration values."""
     store = _get_store(backend)
 
     if action == "get":
@@ -343,10 +348,10 @@ def config(
 
 @app.command()
 def version() -> None:
-    """Print the recall version."""
-    from recall import __version__
+    """Print the memoriagrain version."""
+    from memoriagrain import __version__
 
-    console.print(f"recall [bold]{__version__}[/bold]")
+    console.print(f"memoriagrain [bold]{__version__}[/bold]")
 
 
 if __name__ == "__main__":

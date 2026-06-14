@@ -1,4 +1,4 @@
-"""Confidence scoring for recall memories.
+"""Confidence scoring for memoriagrain memories.
 
 Computes a composite confidence score in [0.0, 1.0] for any memory
 based on three factors:
@@ -20,7 +20,7 @@ from __future__ import annotations
 import math
 from datetime import UTC, datetime
 
-from recall.store.base import Memory
+from memoriagrain.store.base import Memory
 
 # Base confidence by grain level
 GRAIN_BONUS = {

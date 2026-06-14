@@ -1,4 +1,4 @@
-"""SQLite storage backend for recall.
+"""SQLite storage backend for memoriagrain.
 
 This is the offline-safe fallback store used by all demos and tests.
 Schema stores atoms, patterns, and principles with BLOB-encoded numpy
@@ -14,8 +14,8 @@ from collections.abc import Iterator
 from datetime import UTC, datetime
 from pathlib import Path
 
-from recall.embeddings import bytes_to_embedding, cosine_similarity
-from recall.store.base import (
+from memoriagrain.embeddings import bytes_to_embedding, cosine_similarity
+from memoriagrain.store.base import (
     Atom,
     Memory,
     Pattern,
@@ -95,7 +95,7 @@ class SQLiteStore(Store):
     FAISS for v0.1 while remaining correct.
     """
 
-    def __init__(self, db_path: str | Path = ".recall/recall.db") -> None:
+    def __init__(self, db_path: str | Path = ".memoriagrain/memoriagrain.db") -> None:
         """Initialize the SQLite store.
 
         Args:

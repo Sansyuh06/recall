@@ -5,41 +5,41 @@ Install recall as a Claude Code plugin for continuous learning.
 ## Installation
 
 ```
-/plugin install recall@recall
+/plugin install memoriagrain@memoriagrain
 ```
 
 ## What happens
 
-1. The `recall` skill is registered, teaching Claude Code when to call
-   the recall tool during your sessions.
+1. The `memoriagrain` skill is registered, teaching Claude Code when to call
+   the memoriagrain tool during your sessions.
 
 2. A **Stop hook** fires at the end of every session. It reads the
    session transcript, extracts substantive Q&A turns, and writes
-   them as atoms to your local recall store.
+   them as atoms to your local memoriagrain store.
 
-3. Over time, your recall store accumulates knowledge from your work.
+3. Over time, your memoriagrain store accumulates knowledge from your work.
    The next session can recall what you learned yesterday.
 
-## Using recall commands
+## Using memoriagrain commands
 
 After installation, these commands are available:
 
 ```
-recall stats        # See what's in memory
-recall heal         # Fix contradictions
-recall seed --from ./docs  # Populate from existing docs
+memoriagrain stats        # See what's in memory
+memoriagrain heal         # Fix contradictions
+memoriagrain seed --from ./docs  # Populate from existing docs
 ```
 
 ## How the Stop hook works
 
 When you end a Claude Code session (`/quit` or session timeout):
 
-1. Claude Code invokes `python -m recall.hooks.claude_code_stop`
+1. Claude Code invokes `python -m memoriagrain.hooks.claude_code_stop`
 2. The hook reads the session transcript from stdin
 3. It extracts Q&A pairs (user question followed by assistant answer)
 4. Filters out: short answers (<50 chars), clarification questions, errors
 5. Writes accepted pairs as atoms with session attribution
-6. Prints `[recall] wrote N atoms from session <id>` to stderr
+6. Prints `[memoriagrain] wrote N atoms from session <id>` to stderr
 
 You don't need to do anything. Memory grows as a byproduct of your
 normal work.
@@ -49,13 +49,13 @@ normal work.
 After a few sessions:
 
 ```
-recall stats
+memoriagrain stats
 ```
 
 Shows how many atoms, patterns, and principles have accumulated.
 
 ```
-recall replay --since 7d
+memoriagrain replay --since 7d
 ```
 
 Shows a timeline of memory growth over the past week.

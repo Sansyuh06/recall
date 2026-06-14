@@ -1,4 +1,4 @@
-# recall -- Memory tool for Claude Code
+# memoriagrain -- Memory tool for Claude Code
 
 ## When to use recall
 
@@ -8,16 +8,16 @@
 
 ## When to seed
 
-Run `recall seed --from ./docs` at the start of a new project to pre-populate memory from existing documentation. This gives you patterns from day one instead of waiting for them to accumulate.
+Run `memoriagrain seed --from ./docs` at the start of a new project to pre-populate memory from existing documentation. This gives you patterns from day one instead of waiting for them to accumulate.
 
 ## When to heal
 
-Run `recall heal` when:
+Run `memoriagrain heal` when:
 - You notice contradictory answers in your recall results
 - After a significant codebase change that might invalidate past observations
 - Periodically (weekly) to keep the memory store clean
 
-Use `recall heal --dry-run` first to preview what would change.
+Use `memoriagrain heal --dry-run` first to preview what would change.
 
 ## What you get back
 
@@ -40,9 +40,9 @@ This means another agent working on the same project discovered this knowledge. 
 
 ## Commands
 
-- `recall stats` -- see what is in memory
-- `recall heal` -- fix contradictions
-- `recall seed --from PATH` -- populate from docs
-- `recall replay --since 7d` -- see recent memory growth
-- `recall diff --against last-deploy` -- check for stale memories
-- `recall forget --pattern "old API"` -- remove outdated memories
+- `memoriagrain stats` -- see what is in memory
+- `memoriagrain heal` -- fix contradictions
+- `memoriagrain seed --from PATH` -- populate from docs
+- `memoriagrain replay --since 7d` -- see recent memory growth
+- `memoriagrain diff --against last-deploy` -- check for stale memories
+- `memoriagrain forget --pattern "old API"` -- remove outdated memories

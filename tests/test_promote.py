@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
-from recall.promote import PromoteWorker, PromotionConfig
-from recall.store.base import Atom
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.promote import PromoteWorker, PromotionConfig
+from memoriagrain.store.base import Atom
+from memoriagrain.store.sqlite import SQLiteStore
 
 
 class TestPromotionConfig:

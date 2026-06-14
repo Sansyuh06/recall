@@ -3,14 +3,14 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "recall-agent"
+name = "memoriagrain"
 version = "0.1.0"
 description = "Memory the AI agent can call as a tool. Multi-grain, provenance-tracked, self-healing."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 authors = [
-    { name = "recall-agent contributors" },
+    { name = "memoriagrain contributors" },
 ]
 keywords = [
     "agents",
@@ -54,11 +54,11 @@ dev = [
     "mypy>=1.10",
 ]
 all = [
-    "recall-agent[embeddings,pdf,dev]",
+    "memoriagrain[embeddings,pdf,dev]",
 ]
 
 [project.scripts]
-recall = "recall.cli:app"
+memoriagrain = "memoriagrain.cli:app"
 
 [project.urls]
 Homepage = "https://github.com/Sansyuh06/recall"
@@ -67,7 +67,7 @@ Repository = "https://github.com/Sansyuh06/recall"
 Issues = "https://github.com/Sansyuh06/recall/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["recall"]
+packages = ["memoriagrain"]
 
 [tool.ruff]
 target-version = "py311"
@@ -78,7 +78,7 @@ select = ["E", "F", "I", "N", "W", "UP", "B", "SIM", "RUF"]
 ignore = ["E501"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["recall"]
+known-first-party = ["memoriagrain"]
 
 [tool.mypy]
 python_version = "3.11"

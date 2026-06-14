@@ -5,27 +5,27 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from recall.diff import (
+from memoriagrain.diff import (
     diff_against_last_deploy,
     load_deploy_snapshot,
     save_deploy_snapshot,
 )
-from recall.embeddings import embed, embedding_to_bytes
-from recall.store.base import Atom
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.embeddings import embed, embedding_to_bytes
+from memoriagrain.store.base import Atom
+from memoriagrain.store.sqlite import SQLiteStore
 
 
 class TestDiff:
     """Test memory diff against deploy snapshots."""
 
     def test_save_and_load_snapshot(self, tmp_path: Path, monkeypatch: object) -> None:
-        import recall.diff as diff_module
+        import memoriagrain.diff as diff_module
 
         monkeypatch.setattr(diff_module, "SNAPSHOT_PATH", tmp_path / "snapshot.json")  # type: ignore[attr-defined]
 
         save_deploy_snapshot(
             system_prompt="You are a helpful agent.",
-            tools=["search", "recall"],
+            tools=["search", "memoriagrain"],
             model="gpt-4o",
         )
 
@@ -41,7 +41,7 @@ class TestDiff:
     def test_diff_detects_tool_reference(
         self, store: SQLiteStore, tmp_path: Path, monkeypatch: object
     ) -> None:
-        import recall.diff as diff_module
+        import memoriagrain.diff as diff_module
 
         snapshot_path = tmp_path / "snapshot.json"
         monkeypatch.setattr(diff_module, "SNAPSHOT_PATH", snapshot_path)  # type: ignore[attr-defined]

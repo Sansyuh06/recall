@@ -5,8 +5,8 @@ from __future__ import annotations
 import time
 from pathlib import Path
 
-from recall.freshness import check_freshness
-from recall.store.base import Atom
+from memoriagrain.freshness import check_freshness
+from memoriagrain.store.base import Atom
 
 
 class TestFreshness:

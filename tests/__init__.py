@@ -1,1 +1,1 @@
-"""Tests package for recall."""
+"""Tests package for memoriagrain."""

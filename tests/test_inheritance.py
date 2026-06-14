@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
-from recall.inheritance import format_inheritance_line
-from recall.store.base import Memory
+from memoriagrain.inheritance import format_inheritance_line
+from memoriagrain.store.base import Memory
 
 
 class TestInheritance:

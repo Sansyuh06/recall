@@ -1,6 +1,6 @@
 # What memory means for AI agents
 
-A note on why `recall` exists in the shape it does.
+A note on why `memoriagrain` exists in the shape it does.
 
 
 ## Memory is not storage
@@ -19,7 +19,7 @@ point. Observed five times with agreement, it is a pattern worth
 trusting. Observed in conflict with a newer source, it is a
 contradiction that demands resolution -- not silent overwriting.
 
-`recall` implements this hierarchy as three grain levels: atoms
+`memoriagrain` implements this hierarchy as three grain levels: atoms
 (individual observations), patterns (consolidated claims from
 agreeing atoms), and principles (generalizations from agreeing
 patterns). Each promotion requires passing three explicit gates.
@@ -37,13 +37,13 @@ injected, or which memories influenced the response.
 
 This is expensive, invisible, and uncontrollable.
 
-`recall` makes memory a tool the model calls. The model sees
-`recall` in its tool list and decides when to query, what to query
-for, and whether to use the result. The recall step appears in the
+`memoriagrain` makes memory a tool the model calls. The model sees
+`memoriagrain` in its tool list and decides when to query, what to query
+for, and whether to use the result. The memoriagrain step appears in the
 trace with the full response: grain, confidence, freshness, and
 provenance chain. Memory becomes auditable.
 
-When a model calls `recall(query="how does auth work?")`, the
+When a model calls `memoriagrain(query="how does auth work?")`, the
 reader of the trace knows exactly what was asked and what was
 returned. When a model does not call recall, the reader knows
 memory was not a factor. Visibility is not a feature. It is the
@@ -58,7 +58,7 @@ is 8080, derived from five consistent observations across three
 sessions, last confirmed two days ago against the current source
 document" is trustworthy.
 
-Every recall response in this system returns:
+Every memoriagrain response in this system returns:
 
 - **grain** -- atom, pattern, or principle
 - **confidence** -- a continuous score reflecting grain bonus,
@@ -88,7 +88,7 @@ power retrieval (confidence, recency), mark the loser as
 superseded (not deleted -- provenance depends on it), and write
 a log that the developer can review.
 
-`recall heal` does this. It runs a promotion pass first (to
+`memoriagrain heal` does this. It runs a promotion pass first (to
 consolidate anything promotable), then scans for contradicting
 clusters, resolves them, and writes the resolution to a log file.
 The `--dry-run` flag shows what would change without applying it.
@@ -154,5 +154,5 @@ carries its author.
 - We will not paper over contradictions. When atoms disagree, the
   heal worker resolves the conflict explicitly and writes a log.
 
-These are the constraints. `recall` is what remains when you build
+These are the constraints. `memoriagrain` is what remains when you build
 a memory system inside them.

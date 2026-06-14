@@ -1,4 +1,4 @@
-"""Abstract base class for recall storage backends and shared data models.
+"""Abstract base class for memoriagrain storage backends and shared data models.
 
 All concrete backends (SQLite, Foundry IQ) implement the Store ABC.
 Data flows through three grain levels: Atom -> Pattern -> Principle.
@@ -86,7 +86,7 @@ class Principle:
 
 @dataclass
 class Memory:
-    """Unified recall response returned to the calling agent.
+    """Unified memoriagrain response returned to the calling agent.
 
     Wraps any grain level with provenance, confidence, and freshness
     metadata so the agent can make informed decisions about trust.
@@ -135,7 +135,7 @@ class StoreStats:
 
 
 class Store(ABC):
-    """Abstract base class for recall storage backends.
+    """Abstract base class for memoriagrain storage backends.
 
     Implementations must handle persistence, embedding-based search,
     and lifecycle management for all three grain levels.

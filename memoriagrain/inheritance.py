@@ -1,4 +1,4 @@
-"""Cross-agent memory inheritance for recall.
+"""Cross-agent memory inheritance for memoriagrain.
 
 When memories are recalled from agents other than the current one,
 this module formats a visible attribution line for the agent trace.
@@ -12,7 +12,7 @@ from __future__ import annotations
 import sys
 from datetime import UTC, datetime
 
-from recall.store.base import Memory
+from memoriagrain.store.base import Memory
 
 
 def format_inheritance_line(memories: list[Memory], current_agent: str) -> str | None:
@@ -46,7 +46,7 @@ def format_inheritance_line(memories: list[Memory], current_agent: str) -> str |
 
         parts.append(f"{count} {noun} inherited from {agent_id}{age_str}")
 
-    return "\xf0\x9f\xa7\xa0 " + "; ".join(parts)
+    return "\U0001F9E0 " + "; ".join(parts)
 
 
 def _format_age(memories: list[Memory]) -> str:

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from recall.store.base import Atom, Pattern, Principle
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.store.base import Atom, Pattern, Principle
+from memoriagrain.store.sqlite import SQLiteStore
 
 
 class TestSQLiteStoreCRUD:
@@ -12,7 +12,7 @@ class TestSQLiteStoreCRUD:
     def test_write_and_get_atom(self, store: SQLiteStore, sample_embedding: bytes) -> None:
         atom = Atom(
             id="test_001",
-            prompt="What is recall?",
+            prompt="What is memoriagrain?",
             answer="A memory system for AI agents.",
             embedding=sample_embedding,
             agent_id="test",
@@ -23,7 +23,7 @@ class TestSQLiteStoreCRUD:
         retrieved = store.get("test_001")
         assert retrieved is not None
         assert retrieved.grain == "atom"
-        assert "What is recall?" in retrieved.memory
+        assert "What is memoriagrain?" in retrieved.memory
 
     def test_write_and_get_pattern(self, store: SQLiteStore, sample_embedding: bytes) -> None:
         pattern = Pattern(

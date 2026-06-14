@@ -1,10 +1,10 @@
-"""Embedding layer for recall memory vectors.
+"""Embedding layer for memoriagrain memory vectors.
 
 Supports two backends:
   - Local: sentence-transformers/all-MiniLM-L6-v2 (default, no API key needed)
   - OpenAI: text-embedding-3-small (when OPENAI_API_KEY set and RECALL_EMBEDDINGS=openai)
 
-Embeddings are cached on disk in .recall/embed_cache/ keyed by sha256(text)
+Embeddings are cached on disk in .memoriagrain/embed_cache/ keyed by sha256(text)
 to avoid redundant computation.
 """
 
@@ -29,7 +29,7 @@ def _get_cache_dir() -> Path:
     """Return the embedding cache directory, creating it if needed."""
     global _cache_dir
     if _cache_dir is None:
-        _cache_dir = Path(".recall") / "embed_cache"
+        _cache_dir = Path(".memoriagrain") / "embed_cache"
         _cache_dir.mkdir(parents=True, exist_ok=True)
     return _cache_dir
 
@@ -145,7 +145,7 @@ def embedding_to_bytes(vec: np.ndarray) -> bytes:
 
 def bytes_to_embedding(data: bytes) -> np.ndarray:
     """Deserialize bytes back to a numpy embedding vector."""
-    return np.frombuffer(data, dtype=np.float32).copy()  # type: ignore[no-any-return]
+    return np.frombuffer(data, dtype=np.float32).copy()
 
 
 def cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:

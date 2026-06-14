@@ -1,11 +1,11 @@
-"""@remember decorator for recall.
+"""@remember decorator for memoriagrain.
 
 Wraps any function that calls an LLM agent. Before the call, injects
-the recall tool into the model's tool list. After the call, writes
+the memoriagrain tool into the model's tool list. After the call, writes
 the (prompt, answer) pair as a new atom.
 
 Usage:
-    @remember(backend="sqlite:///.recall.db")
+    @remember(backend="sqlite:///.memoriagrain.db")
     def my_agent(prompt: str) -> str:
         ...
 
@@ -22,10 +22,10 @@ from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Any
 
-from recall.embeddings import embed, embedding_to_bytes
-from recall.store.base import Atom, Store
-from recall.store.sqlite import SQLiteStore
-from recall.tool import recall_tool_definition
+from memoriagrain.embeddings import embed, embedding_to_bytes
+from memoriagrain.store.base import Atom, Store
+from memoriagrain.store.sqlite import SQLiteStore
+from memoriagrain.tool import recall_tool_definition
 
 
 def _resolve_store(backend: str | None, store: Store | None) -> Store:
@@ -42,16 +42,16 @@ def _resolve_store(backend: str | None, store: Store | None) -> Store:
         return store
 
     if backend is None:
-        backend = "sqlite:///.recall/recall.db"
+        backend = "sqlite:///.memoriagrain/memoriagrain.db"
 
     if backend.startswith("sqlite://"):
         db_path = backend.replace("sqlite:///", "").replace("sqlite://", "")
         if not db_path:
-            db_path = ".recall/recall.db"
+            db_path = ".memoriagrain/memoriagrain.db"
         return SQLiteStore(db_path)
 
     if backend.startswith("foundry_iq:"):
-        from recall.store.foundry_iq import FoundryIQStore
+        from memoriagrain.store.foundry_iq import FoundryIQStore
 
         kb_name = backend.split(":", 1)[1]
         return FoundryIQStore(kb_name=kb_name)
@@ -61,6 +61,7 @@ def _resolve_store(backend: str | None, store: Store | None) -> Store:
 
 
 def remember(
+    _func: Callable[..., Any] | None = None,
     backend: str | None = None,
     scope: str = "user",
     memory_budget: int = 500,
@@ -68,12 +69,15 @@ def remember(
     agent_id: str = "default",
     prompt_param: str = "prompt",
 ) -> Callable[..., Any]:
-    """Decorator that wraps an agent function with recall memory.
+    """Decorator that wraps an agent function with memoriagrain memory.
 
-    Injects the recall() tool into the agent's tool list and writes
+    Injects the memoriagrain() tool into the agent's tool list and writes
     (prompt, answer) pairs as atoms after each call.
 
+    Supports both ``@remember`` and ``@remember(backend=...)`` syntax.
+
     Args:
+        _func: Internal sentinel — do not pass explicitly.
         backend: Connection string for the storage backend.
             'sqlite:///path' for SQLite, 'foundry_iq:kb_name' for Foundry IQ.
         scope: Memory scope -- 'user', 'agent', or 'global'.
@@ -110,13 +114,17 @@ def remember(
 
             return result
 
-        # Expose recall metadata on the wrapper
+        # Expose memoriagrain metadata on the wrapper
         wrapper._recall_store = resolved_store  # type: ignore[attr-defined]
         wrapper._recall_tool = recall_tool_definition()  # type: ignore[attr-defined]
         wrapper._recall_budget = memory_budget  # type: ignore[attr-defined]
         wrapper._recall_agent_id = agent_id  # type: ignore[attr-defined]
 
         return wrapper
+
+    # Support bare @remember without parentheses
+    if _func is not None:
+        return decorator(_func)
 
     return decorator
 

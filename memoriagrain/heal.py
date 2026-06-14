@@ -1,10 +1,10 @@
-"""Active contradiction resolver for recall.
+"""Active contradiction resolver for memoriagrain.
 
 Detects contradictions in the memory store and resolves them by:
 1. Finding atom clusters with high disagreement (>= 0.2)
 2. Picking a winner using confidence x recency
 3. Tagging losers as superseded (kept for provenance, excluded from search)
-4. Writing resolution details to .recall/heal.log
+4. Writing resolution details to .memoriagrain/heal.log
 
 The heal command runs a promotion pass first, then contradiction resolution.
 """
@@ -19,10 +19,10 @@ from pathlib import Path
 
 import numpy as np
 
-from recall.embeddings import bytes_to_embedding, cosine_similarity
-from recall.judge import judge_cluster
-from recall.promote import PromoteWorker
-from recall.store.base import Atom, Store
+from memoriagrain.embeddings import bytes_to_embedding, cosine_similarity
+from memoriagrain.judge import judge_cluster
+from memoriagrain.promote import PromoteWorker
+from memoriagrain.store.base import Atom, Store
 
 logger = logging.getLogger(__name__)
 
@@ -59,12 +59,12 @@ class HealWorker:
             store: The storage backend.
             similarity_threshold: Cosine similarity for clustering.
             disagreement_threshold: Judge disagreement level that triggers resolution.
-            log_path: Path to the heal log file. Defaults to .recall/heal.log.
+            log_path: Path to the heal log file. Defaults to .memoriagrain/heal.log.
         """
         self.store = store
         self.similarity_threshold = similarity_threshold
         self.disagreement_threshold = disagreement_threshold
-        self.log_path = log_path or Path(".recall") / "heal.log"
+        self.log_path = log_path or Path(".memoriagrain") / "heal.log"
 
     def run(self, dry_run: bool = False) -> list[HealResolution]:
         """Run the full heal pipeline.
@@ -160,7 +160,7 @@ class HealWorker:
         best_score = 0.0
 
         for atom in cluster:
-            # Confidence proxy from recall count
+            # Confidence proxy from memoriagrain count
             conf = min(1.0, atom.recall_count / 10.0) if atom.recall_count > 0 else 0.1
 
             # Recency factor: higher if recalled recently

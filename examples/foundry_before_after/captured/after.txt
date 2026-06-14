@@ -2,7 +2,7 @@ Seeding memory from local docs...
 Seeded: 14 atoms, 0 patterns
 
 ============================================================
-AFTER: Agent with recall
+AFTER: Agent with memoriagrain
 ============================================================
 
 Q1: How does authentication work in Foundry IQ?

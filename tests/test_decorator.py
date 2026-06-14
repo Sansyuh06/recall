@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from recall.decorator import remember
-from recall.store.sqlite import SQLiteStore
-from recall.tool import recall_tool_definition
+from memoriagrain.decorator import remember
+from memoriagrain.store.sqlite import SQLiteStore
+from memoriagrain.tool import recall_tool_definition
 
 
 class TestRememberDecorator:
@@ -15,7 +15,7 @@ class TestRememberDecorator:
         def my_agent(prompt: str) -> str:
             return f"Answer to: {prompt}"
 
-        result = my_agent(prompt="What is recall?")
+        result = my_agent(prompt="What is memoriagrain?")
         assert "Answer to:" in result
 
     def test_tool_spec_injected(self, store: SQLiteStore) -> None:
@@ -25,7 +25,7 @@ class TestRememberDecorator:
 
         assert hasattr(my_agent, "_recall_tool")
         tool = my_agent._recall_tool
-        assert tool["function"]["name"] == "recall"
+        assert tool["function"]["name"] == "memoriagrain"
 
     def test_atom_written_after_call(self, store: SQLiteStore) -> None:
         @remember(store=store, agent_id="test_agent")
@@ -78,7 +78,7 @@ class TestRecallToolDefinition:
         assert tool["type"] == "function"
 
         func = tool["function"]
-        assert func["name"] == "recall"
+        assert func["name"] == "memoriagrain"
         assert "parameters" in func
 
         params = func["parameters"]

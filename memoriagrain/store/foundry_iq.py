@@ -1,4 +1,4 @@
-"""Foundry IQ knowledge base storage backend for recall.
+"""Foundry IQ knowledge base storage backend for memoriagrain.
 
 Implements the Store interface using Microsoft Foundry IQ's REST API
 as the persistence layer. This is the primary backend for enterprise
@@ -16,6 +16,7 @@ FOUNDRY_IQ_PROJECT is not set, initialization raises a clear error.
 
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import os
@@ -23,7 +24,7 @@ from collections.abc import Iterator
 from datetime import UTC, datetime
 from typing import Any
 
-from recall.store.base import (
+from memoriagrain.store.base import (
     Atom,
     Memory,
     Pattern,
@@ -92,7 +93,16 @@ class FoundryIQStore(Store):
         logger.info("Foundry IQ store initialized: %s/%s", self.project, self.kb_name)
 
     def _headers(self) -> dict[str, str]:
-        """Build authenticated request headers."""
+        """Build authenticated request headers.
+
+        Refreshes the Azure credential token if it is within 5 minutes
+        of expiry, preventing mid-session authentication failures.
+        """
+        # Refresh token if within 5 minutes of expiry
+        if self._token.expires_on - datetime.now(UTC).timestamp() < 300:
+            self._token = self._credential.get_token(
+                "https://foundry.microsoft.com/.default"
+            )
         return {
             "Authorization": f"Bearer {self._token.token}",
             "Content-Type": "application/json",
@@ -125,7 +135,10 @@ class FoundryIQStore(Store):
 
         try:
             with urllib.request.urlopen(req, timeout=30) as response:
-                return json.loads(response.read().decode())  # type: ignore[no-any-return]
+                body = response.read()
+                if not body:
+                    return {}
+                return json.loads(body.decode())  # type: ignore[no-any-return]
         except Exception as e:
             logger.error("Foundry IQ request failed: %s %s -> %s", method, url, e)
             raise
@@ -187,8 +200,16 @@ class FoundryIQStore(Store):
         Foundry IQ handles embedding and similarity internally, so
         we pass the query text rather than raw vectors.
         """
+        # Encode the query embedding as base64 so Foundry IQ can use
+        # its native vector search rather than falling back to text-only.
+        import numpy as np
+
+        vec = np.frombuffer(query_embedding, dtype=np.float32)
+        vec_b64 = base64.b64encode(vec.tobytes()).decode("ascii")
+
         params: dict[str, object] = {
             "k": k,
+            "vector": vec_b64,
         }
         if grain != "auto":
             params["filter"] = {"type": grain}
@@ -315,6 +336,8 @@ class FoundryIQStore(Store):
     def all_patterns(self, since: datetime | None = None) -> Iterator[Pattern]:
         """List all patterns from the Foundry IQ KB."""
         params: dict[str, object] = {"filter": {"type": "pattern"}, "limit": 1000}
+        if since:
+            params["filter"]["written_after"] = since.isoformat()  # type: ignore[index]
         result = self._request("POST", "list", params)
         documents = result.get("documents", [])
 

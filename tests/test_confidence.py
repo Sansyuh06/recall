@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
-from recall.confidence import confidence
-from recall.store.base import Memory
+from memoriagrain.confidence import confidence
+from memoriagrain.store.base import Memory
 
 
 class TestConfidence:

@@ -10,11 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `@remember` decorator for wrapping agent functions with memory
-- `recall()` tool injection for OpenAI-compatible agents
+- `memoriagrain()` tool injection for OpenAI-compatible agents
 - Three-grain memory hierarchy: atoms, patterns, principles
 - Three-gate promotion algorithm (density, agreement, recency)
 - Exponential decay with configurable half-life
-- Active contradiction resolution via `recall heal`
+- Active contradiction resolution via `memoriagrain heal`
 - Source-mtime freshness checking
 - Provenance tracking with `derived_from` chains
 - SQLite backend for offline-safe storage
@@ -27,4 +27,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `MEMORY.md` conviction document
 - Real before/after examples with captured terminal output
 
-[0.1.0]: https://github.com/Sansyuh06/recall/releases/tag/v0.1.0
+[0.1.0]: https://github.com/Sansyuh06/memoriagrain/releases/tag/v0.1.0

@@ -1,4 +1,4 @@
-"""Agreement judge for recall's three-gate promotion algorithm.
+"""Agreement judge for memoriagrain's three-gate promotion algorithm.
 
 Determines whether a cluster of atoms share a common claim with
 sufficiently low disagreement to warrant promotion to a pattern.
@@ -15,7 +15,7 @@ import json
 import os
 from itertools import combinations
 
-from recall.store.base import Atom
+from memoriagrain.store.base import Atom
 
 
 def _openai_available() -> bool:
@@ -60,7 +60,10 @@ def _judge_with_openai(atoms: list[Atom]) -> dict[str, object]:
     )
 
     content = response.choices[0].message.content or "{}"
-    result = json.loads(content)
+    try:
+        result = json.loads(content)
+    except (json.JSONDecodeError, ValueError):
+        return _judge_with_heuristic(atoms)
 
     return {
         "common_claim": str(result.get("common_claim", "")),

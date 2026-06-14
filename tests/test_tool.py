@@ -1,11 +1,11 @@
-"""Tests for the recall tool handler."""
+"""Tests for the memoriagrain tool handler."""
 
 from __future__ import annotations
 
-from recall.embeddings import embed, embedding_to_bytes
-from recall.store.base import Atom
-from recall.store.sqlite import SQLiteStore
-from recall.tool import handle_recall_call
+from memoriagrain.embeddings import embed, embedding_to_bytes
+from memoriagrain.store.base import Atom
+from memoriagrain.store.sqlite import SQLiteStore
+from memoriagrain.tool import handle_recall_call
 
 
 class TestHandleRecallCall:

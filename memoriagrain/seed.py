@@ -1,4 +1,4 @@
-"""Seed recall memory from existing content.
+"""Seed memoriagrain memory from existing content.
 
 Walks markdown, text, PDF, and OpenAPI files to extract Q->A pairs
 and writes them as atoms with source_doc populated for freshness tracking.
@@ -6,8 +6,8 @@ Triggers one immediate promotion pass at the end so the seeded KB
 already has patterns.
 
 Usage:
-    recall seed --from ./docs
-    recall seed --from ./openapi.yaml
+    memoriagrain seed --from ./docs
+    memoriagrain seed --from ./openapi.yaml
 """
 
 from __future__ import annotations
@@ -18,10 +18,10 @@ import re
 from datetime import UTC, datetime
 from pathlib import Path
 
-from recall.embeddings import embed, embedding_to_bytes
-from recall.freshness import get_file_mtime
-from recall.promote import PromoteWorker
-from recall.store.base import Atom, Store
+from memoriagrain.embeddings import embed, embedding_to_bytes
+from memoriagrain.freshness import get_file_mtime
+from memoriagrain.promote import PromoteWorker
+from memoriagrain.store.base import Atom, Store
 
 logger = logging.getLogger(__name__)
 
@@ -176,7 +176,7 @@ def _extract_from_pdf(file_path: Path) -> list[tuple[str, str]]:
     except ImportError:
         logger.warning(
             "pypdf not installed, skipping PDF file: %s. "
-            "Install with: pip install recall-agent[pdf]",
+            "Install with: pip install memoriagrain[pdf]",
             file_path,
         )
         return []

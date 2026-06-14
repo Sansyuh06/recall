@@ -12,8 +12,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from recall.tool import handle_recall_call
-from recall.store.sqlite import SQLiteStore
+from memoriagrain.tool import handle_recall_call
+from memoriagrain.store.sqlite import SQLiteStore
 
 
 def main(db_path: str) -> None:

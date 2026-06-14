@@ -1,4 +1,4 @@
-"""Source-mtime freshness checking for recall atoms.
+"""Source-mtime freshness checking for memoriagrain atoms.
 
 For atoms with a source_doc path, compares the current file modification
 time against the stored source_mtime. For HTTP sources, optionally sends
@@ -13,7 +13,7 @@ import logging
 import os
 from pathlib import Path
 
-from recall.store.base import Atom
+from memoriagrain.store.base import Atom
 
 logger = logging.getLogger(__name__)
 

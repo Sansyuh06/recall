@@ -12,7 +12,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+" />
   <a href="https://github.com/Sansyuh06/recall"><img src="https://img.shields.io/badge/Claude_Code-Plugin-blue" alt="Claude Code Plugin" /></a>
-  <a href="https://github.com/Sansyuh06/recall/actions"><img src="https://img.shields.io/github/actions/workflow/status/Sansyuh06/recall/test.yml" alt="Tests" /></a>
+  <a href="https://github.com/Sansyuh06/memoriagrain/actions"><img src="https://img.shields.io/github/actions/workflow/status/Sansyuh06/memoriagrain/test.yml" alt="Tests" /></a>
+  <a href="https://github.com/Sansyuh06/memoriagrain/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Sansyuh06/recall" alt="License" /></a>
 </p>
 
 ---
@@ -26,9 +27,9 @@ This introduces three main issues:
 2. **Invisible Influence:** Developers cannot easily audit why an agent answered the way it did.
 3. **Intent Decay / Contradictions:** As systems evolve, old memories conflict with new facts, leading to hallucinations.
 
-## 🚀 The Solution: `recall`
+## 🚀 The Solution: `memoriagrain`
 
-`recall` is a production-grade, self-healing memory substrate built on **Microsoft Foundry IQ**. Instead of stuffing context behind the scenes, **memory is exposed as a tool** that the agent actively chooses to invoke. Foundry IQ provides the shared, governed knowledge layer — so memories are inherited across agents, respect project-level RBAC, and stay compliant at rest.
+`memoriagrain` is a production-grade, self-healing memory substrate built on **Microsoft Foundry IQ**. Instead of stuffing context behind the scenes, **memory is exposed as a tool** that the agent actively chooses to invoke. Foundry IQ provides the shared, governed knowledge layer — so memories are inherited across agents, respect project-level RBAC, and stay compliant at rest.
 
 Atoms are written from every interaction. Only those passing all three gates earn promotion to a Pattern. Only patterns passing the same three gates earn Principle status. Nothing skips a layer.
 
@@ -61,9 +62,9 @@ graph TD
 
 ## 🏗️ Why Foundry IQ as the Substrate
 
-`recall` ships with both a SQLite backend (offline, zero-config) and a **Microsoft Foundry IQ** backend for production. Why IQ?
+`memoriagrain` ships with both a SQLite backend (offline, zero-config) and a **Microsoft Foundry IQ** backend for production. Why IQ?
 
-*   **Cross-agent inheritance.** When two agents share a Foundry IQ knowledge base, Agent B discovers Agent A's memories through normal `recall()` queries — with full attribution. No replication protocol, no merge strategy. Memory lives where work already lives.
+*   **Cross-agent inheritance.** When two agents share a Foundry IQ knowledge base, Agent B discovers Agent A's memories through normal `memoriagrain()` queries — with full attribution. No replication protocol, no merge strategy. Memory lives where work already lives.
 *   **Permission-aware retrieval.** Foundry IQ respects project-level RBAC. An agent scoped to `project-alpha` cannot read atoms written by `project-beta`. Access control is enforced at the substrate level, not in application code.
 *   **Governed at-rest storage.** Enterprise compliance requires that agent memory is not scattered across local SQLite files on developer laptops. Foundry IQ provides a managed, auditable store — no local PII sprawl.
 
@@ -71,7 +72,7 @@ graph TD
 
 ## 🤝 Cross-Agent Inheritance in Action
 
-This is `recall`'s moat: agents that share a Foundry IQ knowledge base (or even a local SQLite file) automatically discover each other's memories — with visible attribution.
+This is `memoriagrain`'s moat: agents that share a Foundry IQ knowledge base (or even a local SQLite file) automatically discover each other's memories — with visible attribution.
 
 ```
 $ python agent_review.py
@@ -85,7 +86,7 @@ Querying recall for "authentication"...
      DefaultAzureCredential chain...
 ```
 
-Agent B never explicitly imported Agent A's knowledge. It simply queried the shared store, and `recall` surfaced the relevant atoms with a clear inheritance line. The developer reading the trace sees exactly where the knowledge came from.
+Agent B never explicitly imported Agent A's knowledge. It simply queried the shared store, and `memoriagrain` surfaced the relevant atoms with a clear inheritance line. The developer reading the trace sees exactly where the knowledge came from.
 
 See [`examples/cross_agent_learning/`](./examples/cross_agent_learning/) for the full runnable demo.
 
@@ -96,26 +97,26 @@ See [`examples/cross_agent_learning/`](./examples/cross_agent_learning/) for the
 ### Installation
 
 ```bash
-pip install recall-agent
+pip install memoriagrain
 ```
 
 Or run as a **Claude Code Plugin**:
 
 ```bash
-/plugin install recall@recall
+/plugin install memoriagrain@memoriagrain
 ```
 
 ### Decorating Your Agent
 
-Wrap your agent loop with `@remember`. This automatically registers `recall` as a tool and writes new memories from execution traces:
+Wrap your agent loop with `@remember`. This automatically registers `memoriagrain` as a tool and writes new memories from execution traces:
 
 ```python
-from recall import remember
+from memoriagrain import remember
 
-@remember(backend="sqlite:///.recall.db")
+@remember(backend="sqlite:///.memoriagrain.db")
 def my_assistant(prompt: str) -> str:
     # Under the hood:
-    # 1. The `recall` tool is automatically injected into your model's tool definitions.
+    # 1. The `memoriagrain` tool is automatically injected into your model's tool definitions.
     # 2. When execution ends, new session observations are written back as Atoms.
     return response
 ```
@@ -124,11 +125,11 @@ def my_assistant(prompt: str) -> str:
 
 ## 📈 Before vs. After
 
-A comparison of an agent answering questions about Microsoft Foundry IQ — without and with `recall`.
+A comparison of an agent answering questions about Microsoft Foundry IQ — without and with `memoriagrain`.
 
 > **Note:** Captured from a deterministic stub LLM. See [`examples/foundry_before_after/`](./examples/foundry_before_after/) for the reproducible setup. Real LLM numbers will vary.
 
-### ❌ Without `recall`
+### ❌ Without `memoriagrain`
 ```
 Q1: How does authentication work?     [66 tokens, 800ms, $0.0007]
 Q2: What is a knowledge base?         [76 tokens, 1200ms, $0.0008]
@@ -139,7 +140,7 @@ Q5: Best practices for agent memory?  [76 tokens, 1100ms, $0.0008]
 Total: 335 tokens, 5500ms, $0.0035
 ```
 
-### ✅ With `recall`
+### ✅ With `memoriagrain`
 ```
 Q1: How does authentication work?     [RECALLED, confidence=0.50] (95 tokens from memory, 0ms, $0)
 Q2: What is a knowledge base?         [RECALLED, confidence=0.50] (92 tokens from memory, 0ms, $0)
@@ -154,22 +155,22 @@ Total: 467 tokens (from memory), 0ms, $0.0000 — 5/5 recall hits
 
 ## 💻 Command Line Interface
 
-`recall` comes with a powerful, developer-friendly CLI to inspect, seed, and manage memory:
+`memoriagrain` comes with a powerful, developer-friendly CLI to inspect, seed, and manage memory:
 
 ```bash
 # Get stats on the current memory store
-recall stats                  # after pip install
-uv run recall stats           # for development
+memoriagrain stats                  # after pip install
+uv run memoriagrain stats           # for development
 
 # Resolve conflicts & promote qualified atoms
-recall heal
-recall heal --dry-run         # preview what would change
+memoriagrain heal
+memoriagrain heal --dry-run         # preview what would change
 
 # Pre-seed memory from local docs, PDFs, or OpenAPI specs
-recall seed docs/
+memoriagrain seed docs/
 
 # Diff deployment snapshots to invalidate outdated memories
-recall diff v1.0.0 v1.1.0
+memoriagrain diff v1.0.0 v1.1.0
 ```
 
 ---
@@ -187,14 +188,14 @@ recall diff v1.0.0 v1.1.0
 | ✅ | **Test suite** | 10 test modules, hermetic (no API keys needed) |
 | ⚠️ | **Foundry IQ backend** | Implemented; requires `FOUNDRY_IQ_PROJECT` env var |
 | 📋 | **FAISS index** | For stores >100K atoms (currently numpy dot-product) |
-| 📋 | **MCP server mode** | Expose `recall` as an MCP tool server |
-| 📋 | **PyPI publish** | Package is `recall-agent`, not yet published |
+| 📋 | **MCP server mode** | Expose `memoriagrain` as an MCP tool server |
+| 📋 | **PyPI publish** | Package is `memoriagrain`, not yet published |
 
 ---
 
 ## 📖 Deep Dives
 
-*   [MEMORY.md](./MEMORY.md) — The core philosophical tenets behind why `recall` exists.
+*   [MEMORY.md](./MEMORY.md) — The core philosophical tenets behind why `memoriagrain` exists.
 *   [docs/promotion-algorithm.md](./docs/promotion-algorithm.md) — Full technical spec of the three-gate promotion algorithm.
 *   [docs/architecture.md](./docs/architecture.md) — Module graph, embedding caching, and storage engine interfaces.
 *   [docs/claude-code-plugin.md](./docs/claude-code-plugin.md) — Deep integration with Claude Code and continuous learning loops.
